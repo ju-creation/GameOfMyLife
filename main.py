@@ -11,8 +11,8 @@ def show_grille():
     for i in range(l):
         for k in range(L):
             if grille[i][k] == 1:
-                x = l * k
-                y = L * i
+                x = t * k
+                y = t * i
                 canvas_grille.create_rectangle(x, y, x+t, y+t, fill="white")
 
 def create_grille():
