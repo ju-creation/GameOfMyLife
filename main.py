@@ -36,6 +36,30 @@ def count_voisins(i, k):
                 nb_voisins_vie+=1
     return nb_voisins_vie
 
+def next_generation():
+    n_grille = []
+    for i in range(l):
+        ligne = []
+        for k in range(L):
+            nb = count_voisins(i, k)
+            if grille[i][k] == 1:
+                if nb != 2 and nb != 3:
+                    ligne.append(0)
+                else:
+                    ligne.append(1)
+            if grille[i][k] == 0:
+                if nb == 3:
+                    ligne.append(1)
+                else:
+                    ligne.append(0)
+        n_grille.append(ligne)
+    return n_grille
+
+def game_loop():
+    global grille
+    grille = next_generation()
+    show_grille()
+    window.after(200, game_loop)
 '''for ligne in grille:
     print(ligne)'''            #affiche la grille en format textuel dans la console
 
@@ -48,6 +72,6 @@ canvas_grille = CTkCanvas(window, width=700, height=500, background="black", bor
 canvas_grille.pack()
 
 create_grille()
-print(count_voisins(10, 15))
 show_grille()
+game_loop()
 window.mainloop()
