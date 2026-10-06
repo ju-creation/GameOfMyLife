@@ -16,13 +16,14 @@ def show_grille():
                 canvas_grille.create_rectangle(x, y, x+t, y+t, fill="white")
 
 def create_grille():
+    grille.clear()
     for i in range(l):
         ligne = []
         for k in range(L):
             ligne.append(0)
         grille.append(ligne)
-
-    for j in range(100):
+    v_nb_cellules_aleatoire = int(slider_cases_v.get())
+    for j in range(v_nb_cellules_aleatoire):
         grille[randint(0, l-1)][randint(0, L-1)] = 1
 
 voisins = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
@@ -60,18 +61,42 @@ def game_loop():
     grille = next_generation()
     show_grille()
     window.after(200, game_loop)
+
+def run():
+    create_grille()
+    show_grille()
+    game_loop()
+
+def update_ui(value):
+    t_slider_value.configure(text=str(int(value)))
 '''for ligne in grille:
     print(ligne)'''            #affiche la grille en format textuel dans la console
 
 set_appearance_mode('dark')
 window = CTk()
 window.title("Game of the life")
-window.geometry("700x500")
+window.geometry("900x600")
 
 canvas_grille = CTkCanvas(window, width=700, height=500, background="black", borderwidth=0)
 canvas_grille.pack()
 
-create_grille()
-show_grille()
-game_loop()
+frame_sliders = CTkFrame(window, width=400, height=200, fg_color='transparent')
+frame_sliders.pack(anchor='se', padx=20, pady=30)
+
+bt_run = CTkButton(window, text='Run', text_color='white', fg_color='#22C55E', hover_color='#4ADE80',
+                   command=run)
+bt_run.pack(anchor='sw', pady=20, padx=20)
+
+t_slider_cases_v = CTkLabel(frame_sliders, text_color='white', text='Nb cases en vies (0-875):')
+t_slider_cases_v.pack()
+
+slider_cases_v = CTkSlider(frame_sliders, from_=0, to=875, command=update_ui)
+slider_cases_v.pack()
+slider_cases_v.set(100)
+
+t_slider_value = CTkLabel(frame_sliders, text='100', text_color='white')
+t_slider_value.pack()
+
 window.mainloop()
+#corriger le .after qui se superpose quand on appuie plusieurs fois sur run
+#add bt stop et vitesse
