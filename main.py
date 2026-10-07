@@ -5,6 +5,7 @@ l = 25
 L = 35
 t = 20
 grille = []
+running = False
 
 def show_grille():
     canvas_grille.delete("all")
@@ -58,14 +59,23 @@ def next_generation():
 
 def game_loop():
     global grille
-    grille = next_generation()
+    if running:
+        grille = next_generation()
+        show_grille()
+        window.after(200, game_loop)
+
+def run():
+    global running
+    running = True
+    create_grille()
     show_grille()
     window.after(200, game_loop)
 
-def run():
-    create_grille()
-    show_grille()
-    game_loop()
+def stop():
+    global running
+    grille.clear()
+    running = False
+
 
 def update_ui(value):
     t_slider_value.configure(text=str(int(value)))
@@ -86,6 +96,10 @@ frame_sliders.pack(anchor='se', padx=20, pady=30)
 bt_run = CTkButton(window, text='Run', text_color='white', fg_color='#22C55E', hover_color='#4ADE80',
                    command=run)
 bt_run.pack(anchor='sw', pady=20, padx=20)
+
+bt_stop = CTkButton(window, text='Stop', text_color='white', fg_color='#EF4444', hover_color="#F87171",
+                    command=stop)
+bt_stop.pack(anchor='sw', padx=20)
 
 t_slider_cases_v = CTkLabel(frame_sliders, text_color='white', text='Nb cases en vies (0-875):')
 t_slider_cases_v.pack()
