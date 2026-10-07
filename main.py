@@ -59,10 +59,11 @@ def next_generation():
 
 def game_loop():
     global grille
+    vitesse = 1000 -(int(slider_vitesse.get())-1) * 130
     if running:
         grille = next_generation()
         show_grille()
-        window.after(200, game_loop)
+        window.after(vitesse, game_loop)
 
 def run():
     global running
@@ -77,8 +78,11 @@ def stop():
     running = False
 
 
-def update_ui(value):
+def update_ui_cellules(value):
     t_slider_value.configure(text=str(int(value)))
+
+def update_ui_vitesse(value):
+    t_slider_vitesse_value.configure(text=str(int(value)))
 '''for ligne in grille:
     print(ligne)'''            #affiche la grille en format textuel dans la console
 
@@ -87,29 +91,45 @@ window = CTk()
 window.title("Game of the life")
 window.geometry("900x600")
 
-canvas_grille = CTkCanvas(window, width=700, height=500, background="black", borderwidth=0)
+frame_princ = CTkFrame(window, fg_color='transparent')
+frame_princ.pack(fill='both', expand=True)
+
+frame_grille = CTkFrame(frame_princ)
+frame_grille.pack(side='left', padx=20, pady=20)
+
+frame_controles = CTkFrame(frame_princ)
+frame_controles.pack(side='right', padx=20, pady=20)
+
+canvas_grille = CTkCanvas(frame_grille, width=700, height=500, background="black", borderwidth=0)
 canvas_grille.pack()
 
-frame_sliders = CTkFrame(window, width=400, height=200, fg_color='transparent')
-frame_sliders.pack(anchor='se', padx=20, pady=30)
-
-bt_run = CTkButton(window, text='Run', text_color='white', fg_color='#22C55E', hover_color='#4ADE80',
+bt_run = CTkButton(frame_controles, text='Run', text_color='white', fg_color='#22C55E', hover_color='#4ADE80',
                    command=run)
-bt_run.pack(anchor='sw', pady=20, padx=20)
+bt_run.pack(pady=10)
 
-bt_stop = CTkButton(window, text='Stop', text_color='white', fg_color='#EF4444', hover_color="#F87171",
+bt_stop = CTkButton(frame_controles, text='Stop', text_color='white', fg_color='#EF4444', hover_color="#F87171",
                     command=stop)
-bt_stop.pack(anchor='sw', padx=20)
+bt_stop.pack(pady=10)
 
-t_slider_cases_v = CTkLabel(frame_sliders, text_color='white', text='Nb cases en vies (0-875):')
+t_slider_cases_v = CTkLabel(frame_controles, text_color='white', text='Nb cases en vies (0-875):')
 t_slider_cases_v.pack()
 
-slider_cases_v = CTkSlider(frame_sliders, from_=0, to=875, command=update_ui)
+slider_cases_v = CTkSlider(frame_controles, from_=0, to=875, command=update_ui_cellules)
 slider_cases_v.pack()
 slider_cases_v.set(100)
 
-t_slider_value = CTkLabel(frame_sliders, text='100', text_color='white')
+t_slider_value = CTkLabel(frame_controles, text='100', text_color='white')
 t_slider_value.pack()
+
+t_slider_vitesse = CTkLabel(frame_controles, text_color='white', text='Vitesse:')
+t_slider_vitesse.pack()
+
+slider_vitesse = CTkSlider(frame_controles, from_=1, to=10, command=update_ui_vitesse)
+slider_vitesse.pack()
+slider_vitesse.set(5)
+
+t_slider_vitesse_value = CTkLabel(frame_controles, text='5', text_color='white')
+t_slider_vitesse_value.pack()
 
 window.mainloop()
 #corriger le .after qui se superpose quand on appuie plusieurs fois sur run
